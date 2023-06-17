@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %} Words {% endblock %}
+
+{% block content %}
+    <form action="/learn-words/{{ count }}/eng-ua/check" method="POST">
+        <br><br><br>
+        <h3 class="text-center">{{ word[0] }}</h3>
+        <br>
+        <input type="text" class="form-control" placeholder="Слово" name="answer" autocomplete="off">
+        <br>
+        <input type="hidden" name="word" value="{{ word[0] }}">
+        <input type="hidden" name="translation" value="{{ word[1] }}">
+        <input type="hidden" name="definition" value="{{ word[2] }}">
+        <div class="d-flex justify-content-end">
+            <input type="submit" class="btn btn-success" value="Check">
+        </div>
+    </form>
+    <br>
+{% endblock %}

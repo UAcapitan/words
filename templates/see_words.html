@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %} Words {% endblock %}
+
+{% block content %}
+    <div id="accordionFlushSettings" class="accordion accordion-flush border">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingOnSettings">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOnSettings" aria-expanded="true" aria-controls="flush-collapseOnSettings">
+                Settings
+            </button>
+            </h2>
+            <div id="flush-collapseOnSettings" class="accordion-collapse collapse" aria-labelledby="flush-headingOnSettings" data-bs-parent="#accordionFlushSettings">
+            <div class="container">
+                <div class="container">
+                    <div class="container">
+                        <br>
+                        <div>
+                            <input class="form-check-input" type="checkbox" id="word_checkbox" value="true" checked>
+                            <label class="form-check-label" for="word_checkbox">
+                                Only words
+                            </label>
+                        </div>
+                
+                        <div>
+                            <input class="form-check-input" type="checkbox" id="translation_checkbox" value="true" checked>
+                            <label class="form-check-label" for="translation_checkbox">
+                                Translation
+                            </label>
+                        </div>
+                
+                        <div>
+                            <input class="form-check-input" type="checkbox" id="definition_checkbox" value="true" checked>
+                            <label class="form-check-label" for="definition_checkbox">
+                                Definition
+                            </label>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+    <h4>Words:</h4>
+
+    {% for word in words %}
+        <div id="accordionFlush{{ loop.index }}" class="accordion accordion-flush border">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="flush-headingOn{{ loop.index }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOn{{ loop.index }}" aria-expanded="true" aria-controls="flush-collapseOn{{ loop.index }}">
+                    {{ word[0] }}
+                </button>
+                </h2>
+                <div id="flush-collapseOn{{ loop.index }}" class="accordion-collapse collapse word" aria-labelledby="flush-headingOn{{ loop.index }}" data-bs-parent="#accordionFlush{{ loop.index }}">
+                <div class="container">
+                    <div class="container">
+                        <div class="container">
+                            <br>
+                            <h3 class="translation"><strong>{{ word[1] }}</strong></h3>
+                            <p class="definition">{{ word[2] }}</p>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        <br>
+    {% endfor %}
+    <div class="pagination">
+        {% if page > 1 %}
+            <a class="btn btn-sm btn-outline-primary" href="/see-words?page={{ page-1 }}"><</a>
+        {% endif %}
+
+        {% if page - 3 >= 1 %}
+            <a class="btn btn-sm btn-outline-primary" href="/see-words?page={{ page - 3 }}">{{ page - 3 }}</a>
+        {% endif %}
+
+        {% if page - 2 >= 1 %}
+            <a class="btn btn-sm btn-outline-primary" href="/see-words?page={{ page - 2 }}">{{ page - 2 }}</a>
+        {% endif %}
+
+        {% if page - 1 >= 1 %}
+            <a  class="btn btn-sm btn-outline-primary" href="/see-words?page={{ page - 1 }}">{{ page - 1 }}</a>
+        {% endif %}
+        
+        
+        <a class="btn btn-sm btn-outline-secondary">{{ page }}</a>
+        
+        {% if page + 1 <= total_pages %}
+            <a class="btn btn-sm btn-outline-primary" href="/see-words?page={{ page + 1 }}">{{ page + 1 }}</a>
+        {% endif %}
+
+        {% if page + 2 <= total_pages %}
+            <a class="btn btn-sm btn-outline-primary" href="/see-words?page={{ page + 2 }}">{{ page + 2 }}</a>
+        {% endif %}
+
+        {% if page + 3 <= total_pages %}
+            <a class="btn btn-sm btn-outline-primary" href="/see-words?page={{ page + 3 }}">{{ page + 3 }}</a>
+        {% endif %}
+        
+        {% if page < total_pages %}
+            <a class="btn btn-sm btn-outline-primary" href="/see-words?page={{ page+1 }}">></a>
+        {% endif %}
+    </div>
+    <br>
+
+    <script>
+        const word_checkbox = document.getElementById('word_checkbox');
+        const wordElement = document.querySelectorAll('.word');
+        const translation_checkbox = document.getElementById('translation_checkbox');
+        const translationElement = document.querySelectorAll('.translation');
+        const definition_checkbox = document.getElementById('definition_checkbox');
+        const definitionElement = document.querySelectorAll('.definition');
+
+
+        function handleWordCheckboxChange() {
+            wordElement.forEach(element => {
+                if (word_checkbox.checked) {
+                    element.classList.remove("show");
+                } else {
+                    element.classList.add("show");
+                }
+            });
+        }
+
+        function handleTranslationCheckboxChange() {
+            const displayStyle = translation_checkbox.checked ? 'block' : 'none';
+            translationElement.forEach(element => {
+                element.style.display = displayStyle;
+            });
+        }
+
+        function handleDefinitionCheckboxChange() {
+            const displayStyle = definition_checkbox.checked ? 'block' : 'none';
+            definitionElement.forEach(element => {
+                element.style.display = displayStyle;
+            });
+        }
+
+
+        word_checkbox.addEventListener('change', handleWordCheckboxChange);
+        translation_checkbox.addEventListener('change', handleTranslationCheckboxChange);
+        definition_checkbox.addEventListener('change', handleDefinitionCheckboxChange);
+    </script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %} Words {% endblock %}
+
+{% block content %}
+    <style>
+        .button-container {
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 5px;
+        }
+        .button-container .btn {
+            width: 100%;
+        }
+    </style>
+
+    <form id="form" action="/learn-words/{{ count }}/ua-eng-options/check" method="POST">
+        <br><br><br>
+        <h3 class="text-center">{{ word[1] }}</h3>
+        <br>
+        <input type="hidden" name="answer" value="" id="answer_field">
+        <input type="hidden" name="word" value="{{ word[0] }}">
+        <input type="hidden" name="translation" value="{{ word[1] }}">
+        <input type="hidden" name="definition" value="{{ word[2] }}">
+        <div class="container">
+            <div class="button-container">
+              <a class="btn btn-primary" {% if options[0][1] %}id="answer"{% else %}class="false_answer"{% endif %}>{{ options[0][0] }}</a>
+              <a class="btn btn-primary" {% if options[1][1] %}id="answer"{% else %}class="false_answer"{% endif %}>{{ options[1][0] }}</a>
+              <a class="btn btn-primary" {% if options[2][1] %}id="answer"{% else %}class="false_answer"{% endif %}>{{ options[2][0] }}</a>
+              <a class="btn btn-primary" {% if options[3][1] %}id="answer"{% else %}class="false_answer"{% endif %}>{{ options[3][0] }}</a>
+            </div>
+        </div>
+    </form>
+    <br>
+
+    <script>
+        var myButton = document.getElementById('answer');
+
+        myButton.addEventListener('click', function() {
+            myButton.classList.add('btn-success');
+            myButton.classList.remove('btn-primary');
+        });
+
+        var buttons = document.querySelectorAll('.btn');
+
+        buttons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                document.getElementById('answer_field').value = this.textContent;
+                document.getElementById('form').submit();
+            });
+        });
+
+    </script>
+{% endblock %}
