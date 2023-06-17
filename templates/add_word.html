@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %} Words {% endblock %}
+
+{% block content %}
+    <form action="/validate-word" method="POST">
+        <br><br><br>
+        <h3 class="text-secondary">Input new word:</h3>
+        <input type="text" class="form-control" placeholder="Word" name="word" autocomplete="off">
+        <br>
+        <div class="d-flex justify-content-end">
+            <input type="submit" class="btn btn-success" value="Translate word">
+        </div>
+    </form>
+    <br>
+    {% if success %}
+        <div class="alert alert-success" role="alert">
+            <p>Word was added to vocabulary</p>
+        </div>
+    {% endif %}
+{% endblock %}
