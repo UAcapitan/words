@@ -28,6 +28,16 @@ query_to_db(
     )''',
     commit=True
 )
+query_to_db(
+    '''CREATE TABLE IF NOT EXISTS level (
+        points INT,
+        level INT
+    )''',
+    commit=True
+)
+
+if query_to_db('''SELECT COUNT(*) FROM level''')[0][0] == 0:
+    query_to_db('''INSERT INTO level VALUES (0,0);''', commit=True)
 
 def get_options(word, field):
     options = [[word, True],]
@@ -65,6 +75,20 @@ def get_translated_word(word):
     except:
         return ""
 
+def up_level():
+    points, level = query_to_db('''SELECT * FROM level;''')[0]
+    
+    print(points, level)
+
+    points += 1
+    if points >= (level + 1) * 100:
+        points -= (level + 1) * 100
+        level += 1
+
+    print(points, level)
+
+    query_to_db(f'''UPDATE level SET points={points}, level={level}''', commit=True)
+
 @app.route('/')
 def main():
     return render_template("main.html")
@@ -86,9 +110,9 @@ def validate_word():
 
 @app.route('/save-word', methods=["POST"])
 def save_word():
-    word = request.form.get("word", "")
-    translation = request.form.get("translation", "")
-    definition = request.form.get("definition", "")
+    word = request.form.get("word", "").replace("'", "''")
+    translation = request.form.get("translation", "").replace("'", "''")
+    definition = request.form.get("definition", "").replace("'", "''")
 
     query_to_db(
         f'''INSERT INTO words (word, translation, definition) 
@@ -107,7 +131,7 @@ def see_words():
     items_per_page = 10
     offset = (page - 1) * items_per_page
 
-    words = query_to_db(f"SELECT * FROM words LIMIT {items_per_page} OFFSET {offset};")
+    words = query_to_db(f"SELECT * FROM words ORDER BY ROWID DESC LIMIT {items_per_page} OFFSET {offset};")
     total_items = query_to_db("SELECT COUNT(*) FROM words;")[0][0]
     total_pages = int(total_items / items_per_page) + (total_items % items_per_page > 0)
 
@@ -152,6 +176,7 @@ def learn_words_check(count, mode):
             right_word = translation
     
     if answer == right_word:
+        up_level()
         return redirect(f"/learn-words/{count}")
     
     data = {
@@ -189,8 +214,22 @@ def learn(count, mode):
             options = get_options(word[0], "word")
             return render_template("learn_definition_eng_options.html", word=word, count=count, options=options)
         case "word":
+            up_level()
             return render_template("learn_word.html", word=word, count=count)
 
+@app.route('/statistics')
+def statistics():
+    points, level = query_to_db('''SELECT * FROM level;''')[0]
+    count = query_to_db('''SELECT COUNT(*) FROM words;''')[0][0]
+
+    data = {
+        "level": level,
+        "points": points,
+        "next_level_points": (level + 1) * 100,
+        "count": count
+    }
+
+    return render_template("statistics.html", **data)
 
 if __name__ == '__main__':
     app.run(debug=True)
