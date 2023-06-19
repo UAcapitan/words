@@ -102,8 +102,8 @@ def validate_word():
     word = request.form.get("word", "")
 
     data = {
-        "word": word.lower(),
-        "translation": get_translated_word(word).lower(),
+        "word": word.lower().strip(),
+        "translation": get_translated_word(word).lower().strip(),
         "definition": get_word_definition(word)
     }
     return render_template("validate_word.html", **data)
