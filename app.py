@@ -217,6 +217,30 @@ def learn(count, mode):
             up_level()
             return render_template("learn_word.html", word=word, count=count)
 
+@app.route('/change-word/<string:word>/<string:translation>', methods=["GET", "POST"])
+def change(word, translation):
+    if request.method == "GET":
+        word, translation, definition = query_to_db(f"SELECT * FROM words WHERE word='{word}' AND translation='{translation}';")[0]
+
+        data = {
+            "word": word,
+            "translation": translation,
+            "definition": definition
+        }
+        return render_template("change_word.html", **data)
+    else:
+        new_word = request.form.get("word", "").replace("'", "''").lower().strip()
+        new_translation = request.form.get("translation", "").replace("'", "''").lower().strip()
+        new_definition = request.form.get("definition", "").replace("'", "''").strip()
+
+        query_to_db(
+        f'''UPDATE words SET word='{new_word}', translation='{new_translation}', definition='{new_definition}' 
+        WHERE word='{word}' AND translation='{translation}';''',
+        commit=True
+        )
+        
+        return redirect("/see-words")
+
 @app.route('/statistics')
 def statistics():
     points, level = query_to_db('''SELECT * FROM level;''')[0]
@@ -232,4 +256,4 @@ def statistics():
     return render_template("statistics.html", **data)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)

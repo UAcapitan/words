@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} Validate word {% endblock %}
+{% block title %} Change word {% endblock %}
 
 {% block content %}
     <style>
@@ -9,7 +9,7 @@
         }
     </style>
 
-    <form action="/save-word" method="POST">
+    <form action="/change-word/{{ word }}/{{ translation }}" method="POST">
         <br>
         <p class="text-secondary">Word:</p>
         <input type="text" class="form-control" placeholder="Word" name="word" value="{{ word }}" autocomplete="off">
@@ -21,9 +21,9 @@
         <input type="text" class="form-control" placeholder="Definition" name="definition" value="{{ definition }}" autocomplete="off">
         <br>
         <div class="d-flex justify-content-end">
-            <input type="submit" class="btn btn-success ml-3" value="Add new word">
+            <input type="submit" class="btn btn-success ml-3" value="Change word">
             <div class="space_div"></div>
-            <a class="btn btn-primary" href="/add-word">Clear</a>
+            <a class="btn btn-primary" href="/see-words">Cancel</a>
         </div>
     </form>
 {% endblock %}
