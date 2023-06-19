@@ -163,7 +163,7 @@ def learn_words(count):
 
 @app.route("/learn-words/<int:count>/<string:mode>/check", methods=["POST",])
 def learn_words_check(count, mode):
-    answer = request.form.get("answer", "").lower()
+    answer = request.form.get("answer", "").lower().strip()
 
     word = request.form.get("word", "")
     translation = request.form.get("translation", "")
