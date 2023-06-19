@@ -110,9 +110,9 @@ def validate_word():
 
 @app.route('/save-word', methods=["POST"])
 def save_word():
-    word = request.form.get("word", "").replace("'", "''")
-    translation = request.form.get("translation", "").replace("'", "''")
-    definition = request.form.get("definition", "").replace("'", "''")
+    word = request.form.get("word", "").replace("'", "''").lower().strip()
+    translation = request.form.get("translation", "").replace("'", "''").lower().strip()
+    definition = request.form.get("definition", "").replace("'", "''").strip()
 
     query_to_db(
         f'''INSERT INTO words (word, translation, definition) 
